@@ -9,6 +9,11 @@ const campgroundSchema = new mongoose.Schema({
 
 const Campground = mongoose.model("Campground", campgroundSchema);
 
+async function getAllCampgrounds(){
+    const campgrounds = await Campground.find({})
+    return campgrounds
+}
+
 async function createCampground(newData){
     const newCampground = Campground(newData)
     const result = await newCampground.save()
@@ -19,6 +24,6 @@ async function deleteAll(){
     await Campground.deleteMany({});
 }
 
-const campGroundModel = {createCampground, deleteAll}
+const campGroundModel = {getAllCampgrounds, createCampground, deleteAll}
 
 module.exports = campGroundModel

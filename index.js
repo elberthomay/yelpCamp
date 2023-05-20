@@ -4,6 +4,8 @@ const path = require("path")
 
 const campgroundModel = require("./models/campground")
 
+const campgroundRouter = require("./routes/campground")
+
 mongoose.connect("mongodb://127.0.0.1:27017/yelpCampDb", {
     useNewUrlParser: true,
 });
@@ -23,8 +25,10 @@ app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 
 app.get("/", (req, res) => {
-    res.render("index")
+    res.render("home")
 })
+
+app.use("/campground/", campgroundRouter)
 
 app.get("/newCampground", async (req, res) => {
     const result = await campgroundModel.createCampground({
