@@ -25,10 +25,20 @@ async function createCampground(newData){
     return result;
 }
 
+async function updateCampgroundById(id, newData){
+    const updatedCampground = await Campground.findByIdAndUpdate(id, newData, {new: true, validation: true});
+    return updatedCampground;
+}
+
+async function deleteCampgroundById(id){
+    const deletedCampground = Campground.findByIdAndDelete(id);
+    return deletedCampground;
+}
+
 async function deleteAll(){
     await Campground.deleteMany({});
 }
 
-const campGroundModel = {getAllCampgrounds, getCampgroundById, createCampground, deleteAll}
+const campGroundModel = {getAllCampgrounds, getCampgroundById, createCampground, updateCampgroundById, deleteCampgroundById, deleteAll}
 
 module.exports = campGroundModel
