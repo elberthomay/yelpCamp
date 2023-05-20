@@ -88,4 +88,23 @@ router.patch("/:id", async (req, res) => {
     }
 })
 
+router.delete("/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const deletedCampground = await campgroundModel.deleteCampgroundById(id)
+        if (deletedCampground) {
+            res.redirect(`/campground/`)
+        } else{
+            res.status(404).render("notfound")
+        }
+    } catch (err) {
+        console.log(err.message)
+        if (err instanceof mongoose.Error.CastError) {
+            res.redirect("error")
+        } else {
+            res.redirect("error")
+        }
+    }
+})
+
 module.exports = router

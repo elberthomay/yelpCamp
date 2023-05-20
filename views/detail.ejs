@@ -23,7 +23,10 @@
         </li>
         <li>Location: <%= campground.location %></li>
     </ul>
-    <a href="/campground/<%= campground._id %>/edit">Edit Campground</a>
+    <p><a href="/campground/<%= campground._id %>/edit">Edit Campground</a></p>
+    <form action="/campground/<%= campground._id %>?_method=delete" method="post">
+        <input type="submit" value="Delete Campground">
+    </form>
 </body>
 
 </html>
