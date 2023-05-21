@@ -28,6 +28,7 @@ async function seedDb() {
         const randomPrice = Math.floor(Math.random() * 2500)
         const newCampground = {
             title: `${sample(descriptors)} ${sample(places)}`,
+            image: "https://source.unsplash.com/collection/483251",
             price: randomPrice,
             description: "Yeah, it's just a campground",
             location: `${randomCity.city}, ${randomCity.state}`,

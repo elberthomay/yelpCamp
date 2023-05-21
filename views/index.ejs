@@ -5,12 +5,16 @@
             <h2>New Campground</h2>
         </a>
     </div>
-    <ul>
+    <div class="d-flex flex-wrap mb-3">
         <% for( let campground of campgrounds ) { %>
-            <li>
-                <a href="/campground/<%= campground._id %>">
-                    <%= campground.title %>
-                </a>
-            </li>
+            <div class="card m-1" style="width: 18rem;">
+                <img src="<%= campground.image %>" class="card-img-top" alt="<%= campground.title %>">
+                <div class="card-body">
+                    <h5 class="card-title"><%= campground.title %></h5>
+                    <p class="card-text"><%= campground.description %></p>
+                    <p class="card-text"><small class="text-light-emphasis"><%= campground.location %></small></p>
+                    <a href="/campground/<%= campground._id %>" class="btn btn-primary">Details</a>
+                </div>
+            </div>
             <% } %>
-    </ul>
+    </div>
