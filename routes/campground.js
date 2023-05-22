@@ -1,109 +1,71 @@
 const express = require("express")
 const campgroundModel = require("../models/campground")
 const campGroundModel = require("../models/campground")
-const router = express.Router()
+const { catchAsync, IdError, ValidationError, validateCampground } = require("./utilities")
 const mongoose = require("mongoose")
+const router = express.Router()
 
-router.get("/", async (req, res) => {
-    try {
-        const campgrounds = await campgroundModel.getAllCampgrounds()
-        res.render("index", { campgrounds })
-    } catch (err) {
-        console.log(err.message)
-        res.render("error")
-    }
-})
+router.get("/", catchAsync(async (req, res) => {
+    const campgrounds = await campgroundModel.getAllCampgrounds()
+    res.render("index", { campgrounds })
+}))
 
 router.get("/new", (req, res) => {
     res.render("new")
 })
 
-router.get("/:id/edit", async (req, res) => {
-    try {
-        const id = req.params.id;
-        const campground = await campgroundModel.getCampgroundById(id)
-        if (campground) {
-            res.render("edit", { campground })
-        } else res.status(404).render("notfound")
-    } catch (err) {
-        if (err instanceof mongoose.Error.CastError) {
-            res.status(404).render("notfound")
-        } else {
-            console.log(err.message)
-            res.render("error")
-        }
-    }
-    
-})
+router.get("/:id/edit", catchAsync(async (req, res) => {
+    const id = req.params.id;
+    const campground = await campgroundModel.getCampgroundById(id)
+    if (campground) {
+        res.render("edit", { campground })
+    } else throw new IdError("Id not found", 404)
+}))
 
-router.get("/:id", async (req, res) => {
-    try {
-        const id = req.params.id;
-        const campground = await campgroundModel.getCampgroundById(id)
-        if (campground) {
-            res.render("detail", { campground })
-        } else res.status(404).render("notfound")
-    } catch (err) {
-        if (err instanceof mongoose.Error.CastError) {
-            res.status(404).render("notfound")
-        } else {
-            console.log(err.message)
-            res.render("error")
-        }
-    }
-})
+router.get("/:id", catchAsync(async (req, res) => {
+    const id = req.params.id;
+    const campground = await campgroundModel.getCampgroundById(id)
+    if (campground) {
+        res.render("detail", { campground })
+    } else throw new IdError("Id not found", 404)
+}))
 
-router.post("/", async (req, res) => {
-    try {
-        const newCampground = req.body
-        const addedCampground = await campGroundModel.createCampground(newCampground);
-        res.redirect("/campground/")
-    } catch (err) {
-        console.log(err.message)
-        if (err instanceof mongoose.Error.ValidationError) {
-            res.render("error")
-        }
-    }
-})
+router.post("/", validateCampground, catchAsync(async (req, res) => {
+    const newCampground = req.body
+    const addedCampground = await campGroundModel.createCampground(newCampground);
+    res.redirect("/campground/")
+}))
 
-router.patch("/:id", async (req, res) => {
-    try {
-        const id = req.params.id;
-        const newData = req.body
-        const updatedCampground = await campgroundModel.updateCampgroundById(id, newData)
-        if (updatedCampground) {
-            res.redirect(`/campground/${updatedCampground._id}`)
-        } else{
-            res.status(404).render("notfound")
-        }
-    } catch (err) {
-        console.log(err.message)
-        if (err instanceof mongoose.Error.CastError) {
-            res.redirect("error")
-        } else if (err instanceof mongoose.Error.ValidationError) {
-            res.redirect("error")
-        } else {
-            res.redirect("error")
-        }
-    }
-})
+router.patch("/:id", validateCampground, catchAsync(async (req, res) => {
+    const id = req.params.id;
+    const newData = req.body
+    const updatedCampground = await campgroundModel.updateCampgroundById(id, newData)
+    if (updatedCampground) {
+        res.redirect(`/campground/${updatedCampground._id}`)
+    } else throw new IdError("Id not found", 404)
+}))
 
-router.delete("/:id", async (req, res) => {
-    try {
-        const id = req.params.id;
-        const deletedCampground = await campgroundModel.deleteCampgroundById(id)
-        if (deletedCampground) {
-            res.redirect(`/campground/`)
-        } else{
-            res.status(404).render("notfound")
-        }
-    } catch (err) {
-        console.log(err.message)
-        if (err instanceof mongoose.Error.CastError) {
-            res.redirect("error")
-        } else {
-            res.redirect("error")
-        }
+router.delete("/:id", catchAsync(async (req, res) => {
+    const id = req.params.id;
+    const deletedCampground = await campgroundModel.deleteCampgroundById(id)
+    if (deletedCampground) {
+        res.redirect(`/campground/`)
+    } else throw new IdError("Id not found", 404)
+}))
+
+router.use((error, req, res, next) => {
+    if (error instanceof mongoose.Error.CastError) {
+        console.log(error)
+        res.status(400).render("error", { error })
+    } else if (error instanceof IdError) {
+        console.log(error)
+        res.status(404).render("error", { error })
+    } else if (error instanceof ValidationError) {
+        console.log(error)
+        res.status(400).render("error", { error })
+    } else {
+        console.log(error)
+        res.status(500).render("error", { error })
     }
 })
 

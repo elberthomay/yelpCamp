@@ -8,6 +8,8 @@ const campgroundModel = require("./models/campground")
 
 const campgroundRouter = require("./routes/campground")
 
+
+
 mongoose.connect("mongodb://127.0.0.1:27017/yelpCampDb", {
     useNewUrlParser: true,
 });
@@ -22,18 +24,27 @@ db.once("open", () => {
     console.log("database connected")
 })
 
+
+
 const app = express()
 app.engine("ejs", ejsMate)
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 
-app.get("/", (req, res) => {
-    res.render("home")
-})
+
 app.use(methodOverride("_method"))
 app.use(express.urlencoded({extended: true}))
 
+
+app.get("/", (req, res) => {
+    res.render("home")
+})
+
 app.use("/campground/", campgroundRouter)
+
+app.all("*", (req, res) => {
+    res.status(404).render("notfound")
+})
 
 app.listen(3000, () => {
     console.log("listening on 3000")
