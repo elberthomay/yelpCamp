@@ -14,4 +14,4 @@ class ValidationError extends Error{
     }
 }
 
-module.exports = {IdError, ValidationError}
+module.exports = { IdError, ValidationError }

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const { IdError } = require("../utilities/error")
 
 const campgroundSchema = new mongoose.Schema({
     title: {
@@ -30,29 +31,32 @@ const campgroundSchema = new mongoose.Schema({
 
 const Campground = mongoose.model("Campground", campgroundSchema);
 
-async function getAllCampgrounds(){
+async function getAll(){
     const campgrounds = await Campground.find({});
     return campgrounds;
 }
 
-async function getCampgroundById(id){
+async function getById(id){
     const campground = await Campground.findById(id);
+    if (!campground) throw new IdError("Campground Id not found", 404)
     return campground;
 }
 
-async function createCampground(newData){
+async function create(newData){
     const newCampground = Campground(newData);
     const result = await newCampground.save();
     return result;
 }
 
-async function updateCampgroundById(id, newData){
+async function updateById(id, newData){
     const updatedCampground = await Campground.findByIdAndUpdate(id, newData, {new: true, validation: true});
+    if (!updatedCampground) throw new IdError("Id not found", 404)
     return updatedCampground;
 }
 
-async function deleteCampgroundById(id){
-    const deletedCampground = Campground.findByIdAndDelete(id);
+async function deleteById(id){
+    const deletedCampground = await Campground.findByIdAndDelete(id);
+    if(!deletedCampground) throw new IdError("Id not found", 404);
     return deletedCampground;
 }
 
@@ -60,6 +64,6 @@ async function deleteAll(){
     await Campground.deleteMany({});
 }
 
-const campGroundModel = {getAllCampgrounds, getCampgroundById, createCampground, updateCampgroundById, deleteCampgroundById, deleteAll}
+const campGroundModel = {getAll, getById, create, updateById, deleteById, deleteAll}
 
 module.exports = campGroundModel

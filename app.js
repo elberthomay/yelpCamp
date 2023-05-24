@@ -4,9 +4,8 @@ const path = require("path")
 const ejsMate = require("ejs-mate")
 const methodOverride = require("method-override")
 
-const campgroundModel = require("./models/campground")
-
 const campgroundRouter = require("./routes/campground")
+const errorRouter = require("./routes/error")
 
 
 
@@ -41,6 +40,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/campground/", campgroundRouter)
+app.use(errorRouter)
 
 app.all("*", (req, res) => {
     res.status(404).render("notfound")

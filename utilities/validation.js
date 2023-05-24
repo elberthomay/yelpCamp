@@ -1,4 +1,5 @@
 const joi = require("joi")
+const { ValidationError } = require("./error")
 
 const campgroundSchema = joi.object({
     title: joi.string().max(50).required(),

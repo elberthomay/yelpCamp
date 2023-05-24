@@ -1,8 +1,6 @@
 const express = require("express")
 const campgroundModel = require("../models/campground")
-const { IdError, ValidationError } = require("../utilities/error")
 const { validateCampground } = require("../utilities/validation")
-const mongoose = require("mongoose")
 const router = express.Router()
 
 function catchAsync(fn){
@@ -10,7 +8,7 @@ function catchAsync(fn){
 }
 
 router.get("/", catchAsync(async (req, res) => {
-    const campgrounds = await campgroundModel.getAllCampgrounds()
+    const campgrounds = await campgroundModel.getAll()
     res.render("campground/index", { campgrounds })
 }))
 
@@ -20,57 +18,33 @@ router.get("/new", (req, res) => {
 
 router.get("/:id/edit", catchAsync(async (req, res) => {
     const id = req.params.id;
-    const campground = await campgroundModel.getCampgroundById(id)
-    if (campground) {
-        res.render("campground/edit", { campground })
-    } else throw new IdError("Id not found", 404)
+    const campground = await campgroundModel.getById(id)
+    res.render("campground/edit", { campground })
 }))
 
 router.get("/:id", catchAsync(async (req, res) => {
     const id = req.params.id;
-    const campground = await campgroundModel.getCampgroundById(id)
-    if (campground) {
-        res.render("campground/detail", { campground })
-    } else throw new IdError("Id not found", 404)
+    const campground = await campgroundModel.getById(id)
+    res.render("campground/detail", { campground })
 }))
 
 router.post("/", validateCampground, catchAsync(async (req, res) => {
     const newCampground = req.body
-    const addedCampground = await campGroundModel.createCampground(newCampground);
+    const addedCampground = await campGroundModel.create(newCampground);
     res.redirect("/campground/")
 }))
 
-router.patch("/:id", validateCampground, catchAsync(async (req, res) => {
+router.put("/:id", validateCampground, catchAsync(async (req, res) => {
     const id = req.params.id;
     const newData = req.body
-    const updatedCampground = await campgroundModel.updateCampgroundById(id, newData)
-    if (updatedCampground) {
-        res.redirect(`/campground/${updatedCampground._id}`)
-    } else throw new IdError("Id not found", 404)
+    const updatedCampground = await campgroundModel.updateById(id, newData)
+    res.redirect(`/campground/${updatedCampground._id}`)
 }))
 
 router.delete("/:id", catchAsync(async (req, res) => {
     const id = req.params.id;
-    const deletedCampground = await campgroundModel.deleteCampgroundById(id)
-    if (deletedCampground) {
-        res.redirect(`/campground/`)
-    } else throw new IdError("Id not found", 404)
+    const deletedCampground = await campgroundModel.deleteById(id)
+    res.redirect(`/campground/`)
 }))
-
-router.use((error, req, res, next) => {
-    if (error instanceof mongoose.Error.CastError) {
-        console.log(error)
-        res.status(400).render("error", { error })
-    } else if (error instanceof IdError) {
-        console.log(error)
-        res.status(404).render("error", { error })
-    } else if (error instanceof ValidationError) {
-        console.log(error)
-        res.status(400).render("error", { error })
-    } else {
-        console.log(error)
-        res.status(500).render("error", { error })
-    }
-})
 
 module.exports = router
