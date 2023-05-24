@@ -1,25 +1,5 @@
 const joi = require("joi")
 
-function catchAsync(fn){
-    return (req, res, next) => fn(req, res, next).catch(err => next(err))
-}
-
-class IdError extends Error{
-    constructor(message, status){
-        super()
-        this.message = message
-        this.status = status
-    }
-}
-
-class ValidationError extends Error{
-    constructor(message, status){
-        super()
-        this.message = message
-        this.status = status
-    }
-}
-
 const campgroundSchema = joi.object({
     title: joi.string().max(50).required(),
     price: joi.number().min(0).required(),
@@ -37,6 +17,5 @@ function validateCampground(req, res, next){
     }else next();
 }
 
-const utilities = {catchAsync, IdError, ValidationError, validateCampground}
 
-module.exports = utilities
+module.exports = {validateCampground}

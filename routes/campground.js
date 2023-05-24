@@ -1,24 +1,28 @@
 const express = require("express")
 const campgroundModel = require("../models/campground")
-const campGroundModel = require("../models/campground")
-const { catchAsync, IdError, ValidationError, validateCampground } = require("./utilities")
+const { IdError, ValidationError } = require("../utilities/error")
+const { validateCampground } = require("../utilities/validation")
 const mongoose = require("mongoose")
 const router = express.Router()
 
+function catchAsync(fn){
+    return (req, res, next) => fn(req, res, next).catch(err => next(err))
+}
+
 router.get("/", catchAsync(async (req, res) => {
     const campgrounds = await campgroundModel.getAllCampgrounds()
-    res.render("index", { campgrounds })
+    res.render("campground/index", { campgrounds })
 }))
 
 router.get("/new", (req, res) => {
-    res.render("new")
+    res.render("campground/new")
 })
 
 router.get("/:id/edit", catchAsync(async (req, res) => {
     const id = req.params.id;
     const campground = await campgroundModel.getCampgroundById(id)
     if (campground) {
-        res.render("edit", { campground })
+        res.render("campground/edit", { campground })
     } else throw new IdError("Id not found", 404)
 }))
 
@@ -26,7 +30,7 @@ router.get("/:id", catchAsync(async (req, res) => {
     const id = req.params.id;
     const campground = await campgroundModel.getCampgroundById(id)
     if (campground) {
-        res.render("detail", { campground })
+        res.render("campground/detail", { campground })
     } else throw new IdError("Id not found", 404)
 }))
 

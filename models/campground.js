@@ -23,6 +23,11 @@ const campgroundSchema = new mongoose.Schema({
     }, 
 });
 
+//campgroundSchema.post("findOneAndDelete", async function(data){
+//    const campgroundId = data._id
+//    await mongoose.model("Review").deleteMany({_id: campgroundId})
+//})
+
 const Campground = mongoose.model("Campground", campgroundSchema);
 
 async function getAllCampgrounds(){
