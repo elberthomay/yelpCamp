@@ -26,7 +26,7 @@
         </div>
         <div class="col-6 offset-3 my-3">
             <h2>Add Review:</h2>
-            <form action="/campground/reviews/<%= campground._id %>" method="post" novalidate class="needs-validation">
+            <form action="/reviews/<%= campground._id %>" method="post" novalidate class="needs-validation">
                 <div class="mb-2">
                     <label class="form-label" for="star">Star: </label>
                     <input type="range" class="form-range" name="star" id="star" min="1" max="5">
@@ -46,8 +46,8 @@
                 <% for( review of campground.reviews) { %>
                     <li><h6> <%= review.star %> Stars</h6>
                         <p><%= review.review %></p>
-                        <a href="/campground/reviews/<%= review._id %>/edit">edit</a>
-                        <form action="/campground/reviews/<%= review._id %>?_method=delete" method="post">
+                        <a href="/reviews/<%= review._id %>/edit">edit</a>
+                        <form action="/reviews/<%= review._id %>?_method=delete" method="post">
                             <input type="submit" value="delete">
                         </form>
                     </li>

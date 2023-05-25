@@ -8,7 +8,7 @@ function catchAsync(fn){
 }
 
 //display review of the provided campId
-router.get("/:campId/reviews", catchAsync(async (req, res) => {
+router.get("/:campId", catchAsync(async (req, res) => {
     const campId = req.params.campId
     const campground = await campGroundModel.getById(campId)
     const reviews = await reviewModel.findByCampground(campId)
@@ -23,14 +23,14 @@ router.get("/:campId/reviews", catchAsync(async (req, res) => {
 //})
 
 // render edit form for review with the provided id
-router.get("/reviews/:reviewId/edit", catchAsync(async (req, res) => {
+router.get("/:reviewId/edit", catchAsync(async (req, res) => {
     const reviewId = req.params.reviewId
     const review = await reviewModel.getById(reviewId)
     res.render("review/edit", { review })
 }))
 
 // create new review on camp with provided id
-router.post("/reviews/:campId", validateReview, catchAsync(async (req, res) => {
+router.post("/:campId", validateReview, catchAsync(async (req, res) => {
     const campId = req.params.campId
     const newReview = {...req.body, campground: campId}
     await reviewModel.create(newReview)
@@ -38,14 +38,14 @@ router.post("/reviews/:campId", validateReview, catchAsync(async (req, res) => {
 }))
 
 // update review for the provided review id
-router.patch("/reviews/:reviewId", validateReview, catchAsync(async (req, res) => {
+router.patch("/:reviewId", validateReview, catchAsync(async (req, res) => {
     const reviewId = req.params.reviewId
     const updatedReview = await reviewModel.updateById(reviewId, req.body)
     res.redirect(`/campground/${updatedReview.campground}`)
 }))
 
 // delete review for the proved review id
-router.delete("/reviews/:reviewId", catchAsync(async (req, res) => {
+router.delete("/:reviewId", catchAsync(async (req, res) => {
     const reviewId = req.params.reviewId
     const deletedReview = await reviewModel.deleteById(reviewId)
     res.redirect(`/campground/${deletedReview.campground}`)

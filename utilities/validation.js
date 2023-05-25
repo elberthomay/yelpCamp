@@ -14,18 +14,23 @@ const reviewSchema = joi.object({
     star: joi.number().integer().min(1).max(5).required(),
 }).unknown(false).required()
 
-function validate(joiSchema){
+function validate(joiSchema, callback){
     return function(req, res, next){
         const { error } = joiSchema.validate(req.body);
         if(error) {
             const message = error.details.map(e => e.message).join(",");
             throw new ValidationError(message, 400);
-        }else next();
+        }else{
+            callback(req.body);
+            next();
+        }
     }
 }
 
-const validateCampground = validate(campgroundSchema)
-const validateReview = validate(reviewSchema)
+const validateCampground = validate(campgroundSchema, () => {})
+const validateReview = validate(reviewSchema, (data) => {
+    if (data.review === "") delete data.review
+})
 
 
 module.exports = {validateCampground, validateReview}

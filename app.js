@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/campground/", campgroundRouter)
-app.use("/campground/", reviewRouter)
+app.use("/reviews/", reviewRouter)
 app.use(errorRouter)
 
 app.all("*", (req, res) => {

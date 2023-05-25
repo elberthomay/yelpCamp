@@ -30,7 +30,7 @@ router.get("/:id", catchAsync(async (req, res) => {
 
 router.post("/", validateCampground, catchAsync(async (req, res) => {
     const newCampground = req.body
-    const addedCampground = await campGroundModel.create(newCampground);
+    const addedCampground = await campgroundModel.create(newCampground);
     res.redirect("/campground/")
 }))
 
