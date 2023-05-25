@@ -24,4 +24,19 @@
                 </form>
             </div>
         </div>
+        <div class="col-8 offset-2">
+            <h2>Reviews</h2>
+            <ul>
+                <% for( review of campground.reviews) { %>
+                    <li><h6> <%= review.star %> Stars</h6>
+                        <p><%= review.review %></p>
+                        <a href="/campground/reviews/<%= review._id %>/edit">edit</a>
+                        <form action="/campground/reviews/<%= review._id %>?_method=delete" method="post">
+                            <input type="submit" value="delete">
+                        </form>
+                    </li>
+                <% } %>
+            </ul>
+            <a href="/campground/<%= campground._id %>/reviews/new">New Review</a>
+        </div>
     </div>

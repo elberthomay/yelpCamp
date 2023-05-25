@@ -5,6 +5,7 @@ const ejsMate = require("ejs-mate")
 const methodOverride = require("method-override")
 
 const campgroundRouter = require("./routes/campground")
+const reviewRouter = require("./routes/review")
 const errorRouter = require("./routes/error")
 
 
@@ -40,6 +41,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/campground/", campgroundRouter)
+app.use("/campground/", reviewRouter)
 app.use(errorRouter)
 
 app.all("*", (req, res) => {
