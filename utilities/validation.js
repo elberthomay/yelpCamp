@@ -7,12 +7,12 @@ const campgroundSchema = joi.object({
     image: joi.string().uri().required(),
     description: joi.string().max(500).required(),
     location: joi.string().max(100).required(),
-}).unknown(false)
+}).unknown(false).required()
 
 const reviewSchema = joi.object({
     review: joi.string().max(500).allow('').optional(),
     star: joi.number().integer().min(1).max(5).required(),
-}).unknown(false)
+}).unknown(false).required()
 
 function validate(joiSchema){
     return function(req, res, next){

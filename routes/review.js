@@ -17,10 +17,10 @@ router.get("/:campId/reviews", catchAsync(async (req, res) => {
 }))
 
 // render new review form
-router.get("/:campId/reviews/new", (req, res) => {
-    const campId = req.params.campId
-    res.render("review/new", { campId })
-})
+//router.get("/:campId/reviews/new", (req, res) => {
+//    const campId = req.params.campId
+//    res.render("review/new", { campId })
+//})
 
 // render edit form for review with the provided id
 router.get("/reviews/:reviewId/edit", catchAsync(async (req, res) => {
@@ -48,7 +48,7 @@ router.patch("/reviews/:reviewId", validateReview, catchAsync(async (req, res) =
 router.delete("/reviews/:reviewId", catchAsync(async (req, res) => {
     const reviewId = req.params.reviewId
     const deletedReview = await reviewModel.deleteById(reviewId)
-    res.redirect(`/campground/${deletedReview.campground}/reviews/`)
+    res.redirect(`/campground/${deletedReview.campground}`)
 }))
 
 module.exports = router
