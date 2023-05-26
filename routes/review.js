@@ -34,6 +34,7 @@ router.post("/:campId", validateReview, catchAsync(async (req, res) => {
     const campId = req.params.campId
     const newReview = {...req.body, campground: campId}
     await reviewModel.create(newReview)
+    req.flash("success", "Created new review!")
     res.redirect(`/campground/${campId}`)
 }))
 
@@ -48,6 +49,7 @@ router.patch("/:reviewId", validateReview, catchAsync(async (req, res) => {
 router.delete("/:reviewId", catchAsync(async (req, res) => {
     const reviewId = req.params.reviewId
     const deletedReview = await reviewModel.deleteById(reviewId)
+    req.flash("success", "Review deleted successfully")
     res.redirect(`/campground/${deletedReview.campground}`)
 }))
 
