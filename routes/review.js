@@ -1,14 +1,14 @@
 const router = require("express").Router()
-const reviewModel = require("../models/reviews")
-const campGroundModel = require("../models/campground")
+const Review = require("../models/reviews")
+const CampGround = require("../models/campground")
 const { validateReview } = require("../utilities/validation")
 const catchAsync = require("../utilities/catchAsync")
 
 //display review of the provided campId
 router.get("/:campId", catchAsync(async (req, res) => {
     const campId = req.params.campId
-    const campground = await campGroundModel.getById(campId)
-    const reviews = await reviewModel.findByCampground(campId)
+    const campground = await CampGround.getById(campId)
+    const reviews = await Review.findByCampground(campId)
     campground.reviews = reviews
     res.render("review/detail", { campground })
 }))
@@ -22,7 +22,7 @@ router.get("/:campId", catchAsync(async (req, res) => {
 // render edit form for review with the provided id
 router.get("/:reviewId/edit", catchAsync(async (req, res) => {
     const reviewId = req.params.reviewId
-    const review = await reviewModel.getById(reviewId)
+    const review = await Review.getById(reviewId)
     res.render("review/edit", { review })
 }))
 
@@ -30,7 +30,7 @@ router.get("/:reviewId/edit", catchAsync(async (req, res) => {
 router.post("/:campId", validateReview, catchAsync(async (req, res) => {
     const campId = req.params.campId
     const newReview = {...req.body, campground: campId}
-    await reviewModel.create(newReview)
+    await Review.create(newReview)
     req.flash("success", "Created new review!")
     res.redirect(`/campground/${campId}`)
 }))
@@ -38,14 +38,14 @@ router.post("/:campId", validateReview, catchAsync(async (req, res) => {
 // update review for the provided review id
 router.patch("/:reviewId", validateReview, catchAsync(async (req, res) => {
     const reviewId = req.params.reviewId
-    const updatedReview = await reviewModel.updateById(reviewId, req.body)
+    const updatedReview = await Review.updateById(reviewId, req.body)
     res.redirect(`/campground/${updatedReview.campground}`)
 }))
 
 // delete review for the proved review id
 router.delete("/:reviewId", catchAsync(async (req, res) => {
     const reviewId = req.params.reviewId
-    const deletedReview = await reviewModel.deleteById(reviewId)
+    const deletedReview = await Review.deleteById(reviewId)
     req.flash("success", "Review deleted successfully")
     res.redirect(`/campground/${deletedReview.campground}`)
 }))

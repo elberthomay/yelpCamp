@@ -26,56 +26,46 @@ reviewSchema.pre("save", async function(){
     if(count === 0) throw new IdError("Campground Id not found", 404)
 })
 
-const Review = mongoose.model("Review", reviewSchema)
-
-async function getAll() {
-    const reviews = await Review.find({});
+reviewSchema.statics.getAll = async function() {
+    const reviews = await this.find({});
     return reviews;
 }
 
-async function getById(id) {
-    const review = await Review.findById(id);
+reviewSchema.statics.getById = async function (id) {
+    const review = await this.findById(id);
     if (!review) throw new IdError("Id not found", 404);
     return review;
 }
 
-async function findByCampground(campgroundId) {
-    const reviews = await Review.find({ campground: campgroundId });
+reviewSchema.statics.findByCampground = async function (campgroundId) {
+    const reviews = await this.find({ campground: campgroundId });
     return reviews;
 }
 
-async function create(newData) {
-    const newReview = new Review(newData);
+reviewSchema.statics.create = async function (newData) {
+    const newReview = new this(newData);
     const result = await newReview.save();
     return result;
 }
 
-async function updateById(id, newData) {
-    const updatedReview = await Review.findByIdAndUpdate(
-        id,
-        newData,
+reviewSchema.statics.updateById = async function (id, newData) {
+    const updatedReview = await this.findByIdAndUpdate( id, newData,
         { new: true, runValidators: true }
     );
     if (!updatedReview) throw new IdError("Id not found", 404);
     return updatedReview;
 }
 
-async function deleteById(id) {
-    const deletedReview = await Review.findByIdAndDelete(id);
+reviewSchema.statics.deleteById = async function (id) {
+    const deletedReview = await this.findByIdAndDelete(id);
     if (!deletedReview) throw new IdError("Id not found", 404);
     return deletedReview;
 }
 
-async function deleteAll() {
-    await Review.deleteMany({});
+reviewSchema.statics.deleteAll = async function () {
+    await this.deleteMany({});
 }
 
-const reviewModel = {
-    getById,
-    create,
-    updateById,
-    deleteById,
-    findByCampground, // Add the findByCampground function
-};
+const Review = mongoose.model("Review", reviewSchema)
 
-module.exports = reviewModel;
+module.exports = Review

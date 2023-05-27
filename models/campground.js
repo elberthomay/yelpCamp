@@ -35,54 +35,43 @@ campgroundSchema.post("findOneAndDelete", async function (data) {
     await mongoose.model("Review").deleteMany({ campground: campgroundId })
 })
 
-const Campground = mongoose.model("Campground", campgroundSchema);
-
-async function getAll() {
-    const campgrounds = await Campground.find({});
+campgroundSchema.statics.getAll = async function () {
+    const campgrounds = await this.find({});
     return campgrounds;
 }
 
-async function getById(id) {
-    const campground = await Campground.findById(id).populate("user");
+campgroundSchema.statics.getById = async function (id) {
+    const campground = await this.findById(id).populate("user");
     if (!campground) throw new IdError("Campground Id not found", 404)
     const reviews = await mongoose.model("Review").find({campground: id})
     campground.reviews = reviews
     return campground;
 }
 
-async function create(newData) {
-    const newCampground = Campground(newData);
+campgroundSchema.statics.create = async function (newData) {
+    const newCampground = this(newData);
     const result = await newCampground.save();
     return result;
 }
 
-async function updateById(id, newData) {
-    const updatedCampground = await Campground.findByIdAndUpdate(
-        id,
-        newData,
+campgroundSchema.statics.updateById = async function (id, newData) {
+    const updatedCampground = await this.findByIdAndUpdate( id, newData,
         { new: true, runValidators: true }
     );
     if (!updatedCampground) throw new IdError("Id not found", 404)
     return updatedCampground;
 }
 
-async function deleteById(id) {
-    const deletedCampground = await Campground.findByIdAndDelete(id);
+campgroundSchema.statics.deleteById = async function (id) {
+    const deletedCampground = await this.findByIdAndDelete(id);
     if (!deletedCampground) throw new IdError("Id not found", 404);
     return deletedCampground;
 }
 
-async function deleteAll() {
-    await Campground.deleteMany({});
+campgroundSchema.statics.deleteAll = async function () {
+    await this.deleteMany({});
 }
 
-const campGroundModel = {
-    getAll,
-    getById,
-    create,
-    updateById,
-    deleteById,
-    deleteAll
-}
+const Campground = mongoose.model("Campground", campgroundSchema)
 
-module.exports = campGroundModel
+module.exports = Campground
