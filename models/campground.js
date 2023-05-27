@@ -2,6 +2,11 @@ const mongoose = require("mongoose")
 const { IdError } = require("../utilities/error")
 
 const campgroundSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
     title: {
         type: String,
         required: true
@@ -38,7 +43,7 @@ async function getAll() {
 }
 
 async function getById(id) {
-    const campground = await Campground.findById(id);
+    const campground = await Campground.findById(id).populate("user");
     if (!campground) throw new IdError("Campground Id not found", 404)
     const reviews = await mongoose.model("Review").find({campground: id})
     campground.reviews = reviews

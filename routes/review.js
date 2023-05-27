@@ -2,10 +2,7 @@ const router = require("express").Router()
 const reviewModel = require("../models/reviews")
 const campGroundModel = require("../models/campground")
 const { validateReview } = require("../utilities/validation")
-
-function catchAsync(fn){
-    return (req, res, next) => fn(req, res, next).catch(err => next(err))
-}
+const catchAsync = require("../utilities/catchAsync")
 
 //display review of the provided campId
 router.get("/:campId", catchAsync(async (req, res) => {

@@ -1,23 +1,20 @@
 const express = require("express")
 const campgroundModel = require("../models/campground")
-const { validateCampground } = require("../utilities/validation")
+const { validateCampground, isLoggedIn } = require("../utilities/validation")
 const { IdError } = require("../utilities/error")
 const router = express.Router()
-
-function catchAsync(fn) {
-    return (req, res, next) => fn(req, res, next).catch(err => next(err))
-}
+const catchAsync = require("../utilities/catchAsync")
 
 router.get("/", catchAsync(async (req, res) => {
     const campgrounds = await campgroundModel.getAll()
     res.render("campground/index", { campgrounds })
 }))
 
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
     res.render("campground/new")
 })
 
-router.get("/:id/edit", catchAsync(async (req, res) => {
+router.get("/:id/edit", isLoggedIn, catchAsync(async (req, res) => {
     const id = req.params.id;
     try {
         const campground = await campgroundModel.getById(id)
@@ -43,14 +40,14 @@ router.get("/:id", catchAsync(async (req, res) => {
     }
 }))
 
-router.post("/", validateCampground, catchAsync(async (req, res) => {
+router.post("/", validateCampground, isLoggedIn, catchAsync(async (req, res) => {
     const newCampground = req.body
     const addedCampground = await campgroundModel.create(newCampground);
     req.flash("success", "New campground successfully made!")
     res.redirect("/campground/")
 }))
 
-router.put("/:id", validateCampground, catchAsync(async (req, res) => {
+router.put("/:id", validateCampground, isLoggedIn, catchAsync(async (req, res) => {
     const id = req.params.id;
     const newData = req.body
     const updatedCampground = await campgroundModel.updateById(id, newData)
@@ -58,7 +55,7 @@ router.put("/:id", validateCampground, catchAsync(async (req, res) => {
     res.redirect(`/campground/${updatedCampground._id}`)
 }))
 
-router.delete("/:id", catchAsync(async (req, res) => {
+router.delete("/:id", isLoggedIn, catchAsync(async (req, res) => {
     const id = req.params.id;
     const deletedCampground = await campgroundModel.deleteById(id)
     res.redirect(`/campground/`)

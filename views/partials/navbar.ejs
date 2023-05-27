@@ -10,7 +10,19 @@
                 <a class="nav-link active" aria-current="page" href="/">Home</a>
                 <a class="nav-link" href="/campground">All Campground</a>
                 <a class="nav-link" href="/campground/new">New Campground</a>
-                <a class="nav-link disabled">Disabled</a>
+            </div>
+            <% if (currentUser) { %>
+                <div class="navbar-nav mx-auto">
+                    <h1>Hello <%= currentUser.username %></h1>
+                </div>
+            <% } %>
+            <div class="navbar-nav ms-auto">
+                <% if (currentUser) { %>
+                    <a href="/logout" class="nav-link">Logout</a>
+                <% } else { %>
+                    <a href="/login" class="nav-link">Login</a>
+                    <a href="/register" class="nav-link">Register</a>
+                <% } %>
             </div>
         </div>
     </div>

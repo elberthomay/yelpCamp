@@ -27,13 +27,14 @@ async function seedDb() {
         const randomCity = sample(cities)
         const randomPrice = Math.floor(Math.random() * 2500)
         const newCampground = {
+            user: new mongoose.Types.ObjectId("6470a91ca874a0127c986ed7"),
             title: `${sample(descriptors)} ${sample(places)}`,
             image: "https://source.unsplash.com/collection/483251",
             price: randomPrice,
             description: "Yeah, it's just a campground",
             location: `${randomCity.city}, ${randomCity.state}`,
         };
-        await campGroundModel.createCampground(newCampground)
+        await campGroundModel.create(newCampground)
     }
 }
 

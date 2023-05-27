@@ -16,6 +16,8 @@
                 </li>
                 <li class="list-group-item">Location: <%= campground.location %>
                 </li>
+                <li class="list-group-item">Submitted By: <%= campground.user.username %>
+                </li>
             </ul>
             <div class="card-body">
                 <a href="/campground/<%= campground._id %>/edit" class="card-link btn btn-warning">Edit Campground</a>
