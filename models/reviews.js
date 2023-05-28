@@ -1,7 +1,13 @@
 const mongoose = require("mongoose")
+const Campground = require("./campground")
 const { IdError } = require("../utilities/error")
 
 const reviewSchema = mongoose.Schema({
+    user: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
     campground: {
         type: mongoose.Types.ObjectId,
         ref: "Campground",
@@ -24,6 +30,10 @@ reviewSchema.pre("save", async function(){
     const campgroundId = this.campground;
     const count = await mongoose.model("Campground").countDocuments({_id: campgroundId})
     if(count === 0) throw new IdError("Campground Id not found", 404)
+
+    const userId = this.user
+    const commentCount = await mongoose.model("Review").countDocuments( {user: userId, campground: campgroundId} )
+    if(commentCount !== 0) throw new IdError("Duplicate review found", 400)
 })
 
 reviewSchema.statics.getAll = async function() {
@@ -37,9 +47,14 @@ reviewSchema.statics.getById = async function (id) {
     return review;
 }
 
-reviewSchema.statics.findByCampground = async function (campgroundId) {
-    const reviews = await this.find({ campground: campgroundId });
+reviewSchema.statics.getByCampgroundId = async function (campgroundId) {
+    const reviews = await this.find({ campground: campgroundId }).populate("user", "username");
     return reviews;
+}
+
+reviewSchema.statics.getByUserAndCampId = async function(userId, campgroundId) {
+    const userReview = await this.findOne({ user: userId, campground: campgroundId}).populate("user")
+    return userReview
 }
 
 reviewSchema.statics.create = async function (newData) {

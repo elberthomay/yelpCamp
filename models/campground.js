@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const Review = require("./reviews")
 const { IdError } = require("../utilities/error")
 
 const campgroundSchema = new mongoose.Schema({
@@ -32,7 +33,7 @@ const campgroundSchema = new mongoose.Schema({
 
 campgroundSchema.post("findOneAndDelete", async function (data) {
     const campgroundId = data._id
-    await mongoose.model("Review").deleteMany({ campground: campgroundId })
+    await Review.deleteMany({ campground: campgroundId })
 })
 
 campgroundSchema.statics.getAll = async function () {
@@ -41,9 +42,9 @@ campgroundSchema.statics.getAll = async function () {
 }
 
 campgroundSchema.statics.getById = async function (id) {
-    const campground = await this.findById(id).populate("user");
+    const campground = await this.findById(id);
     if (!campground) throw new IdError("Campground Id not found", 404)
-    const reviews = await mongoose.model("Review").find({campground: id})
+    const reviews = await Review.getByCampgroundId(id)
     campground.reviews = reviews
     return campground;
 }

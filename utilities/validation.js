@@ -46,5 +46,13 @@ function isLoggedIn(req, res, next) {
     next()
 }
 
+function authorize(req, res, next){
+    if(!req.user._id.equals(res.locals.authorId)){
+        req.flash("error", "Not Authorized")
+        return res.redirect("/campground")
+    }
+    next()
+}
 
-module.exports = { validateCampground, validateReview, isLoggedIn, moveReturnTo }
+
+module.exports = { validateCampground, validateReview, isLoggedIn, moveReturnTo, authorize }

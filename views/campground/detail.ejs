@@ -19,42 +19,63 @@
                 <li class="list-group-item">Submitted By: <%= campground.user.username %>
                 </li>
             </ul>
-            <div class="card-body">
-                <a href="/campground/<%= campground._id %>/edit" class="card-link btn btn-warning">Edit Campground</a>
-                <form class="d-inline-block" action="/campground/<%= campground._id %>?_method=delete" method="post">
-                    <input class="card-link btn btn-danger" type="submit" value="Delete Campground">
+            <% if (currentUser && currentUser._id.equals(campground.user)) { %>
+                <div class="card-body">
+                    <a href="/campground/<%= campground._id %>/edit" class="card-link btn btn-warning">Edit Campground</a>
+                    <form class="d-inline-block" action="/campground/<%= campground._id %>?_method=delete" method="post">
+                        <input class="card-link btn btn-danger" type="submit" value="Delete Campground">
+                    </form>
+                </div>
+            <% } %>
+
+        </div>
+        <% if (currentUser) { %>
+            <div class="col-6 offset-3 my-3">
+                <h2>Add Review:</h2>
+                <form action="/reviews/<%= userReview ? userReview._id : campground._id %>?_method=<%= userReview ? "patch" : "post" %>" method="post"
+                    novalidate class="needs-validation">
+                    <div class="mb-2">
+                        <label class="form-label" for="star">Star: </label>
+                        <input type="range" class="form-range" name="star" id="star" min="1" max="5" <%=userReview ? `value="${userReview.star}" ` : "" %>>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label" for="review">Review: </label>
+                        <textarea class="form-control" name="review" id="review" cols="auto" rows="5" maxlength="500"
+                            aria-describedby="reviewFeedback"><%= userReview && userReview.review ? userReview.review : "" %></textarea>
+                    </div>
+                    <div class="mb-2 d-flex align-items-center">
+                        <% if (userReview) { %>
+                            <input class="btn btn-success mx-auto" type="submit" value="Update Review!">
+                        <% } else { %>
+                            <input class="btn btn-success mx-auto" type="submit" value="Add Review!">
+                        <% } %>
+                    </div>
                 </form>
-            </div>
-        </div>
-        <div class="col-6 offset-3 my-3">
-            <h2>Add Review:</h2>
-            <form action="/reviews/<%= campground._id %>" method="post" novalidate class="needs-validation">
-                <div class="mb-2">
-                    <label class="form-label" for="star">Star: </label>
-                    <input type="range" class="form-range" name="star" id="star" min="1" max="5">
-                </div>
-                <div class="mb-2">
-                    <label class="form-label" for="review">Review: </label>
-                    <textarea class="form-control" name="review" id="review" cols="auto" rows="5" maxlength="500" aria-describedby="reviewFeedback"></textarea>
-                </div>
-                <div class="mb-2 d-flex align-items-center">
-                    <input class="btn btn-success mx-auto" type="submit" value="Add Review!">
-                </div>
-            </form>
-        </div>
-        <div class="col-10 offset-1">
-            <h2>Reviews</h2>
-            <ul>
-                <% for( review of campground.reviews) { %>
-                    <li><h6> <%= review.star %> Stars</h6>
-                        <p><%= review.review %></p>
-                        <a href="/reviews/<%= review._id %>/edit">edit</a>
-                        <form action="/reviews/<%= review._id %>?_method=delete" method="post">
-                            <input type="submit" value="delete">
-                        </form>
-                    </li>
+                <% if (userReview) { %>
+                    <form action="/reviews/<%= userReview._id %>?_method=delete" method="post">
+                        <input class="btn btn-danger mx-auto" type="submit" value="Delete Review">
+                    </form>
                 <% } %>
-            </ul>
-        </div>
+            </div>
+        <% } %>
+
+                <div class="col-10 offset-1">
+                    <h2>Reviews</h2>
+                    <ul>
+                        <% for( review of campground.reviews) { %>
+                            <li>
+                                <h5>
+                                    <%= review.user.username %>
+                                </h5>
+                                <h6>
+                                    <%= review.star %> Stars
+                                </h6>
+                                <p>
+                                    <%= review.review %>
+                                </p>
+                            </li>
+                            <% } %>
+                    </ul>
+                </div>
     </div>
     <script src="/js/validateForms.js"></script>
