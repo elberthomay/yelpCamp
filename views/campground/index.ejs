@@ -1,5 +1,8 @@
 <% layout('/layouts/boilerplate') %>
+<link crossorigin="anonymous" href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+<script crossorigin="anonymous" src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
     <h1>All Campgrounds:</h1>
+    <div id="cluster-map"></div>
     <div>
         <a href="/campground/new/">
             <h2>New Campground</h2>
@@ -8,7 +11,11 @@
     <div class="d-flex flex-wrap mb-3">
         <% for( let campground of campgrounds ) { %>
             <div class="card m-1" style="width: 18rem;">
-                <img src="<%= campground.image %>" class="card-img-top" alt="<%= campground.title %>">
+                <% if (campground.images.length === 0) { %>
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg">
+                <% } else{ %>
+                    <img src="<%= campground.images[0].url %>" class="card-img-top" alt="<%= campground.title %>">
+                <% } %>
                 <div class="card-body">
                     <h5 class="card-title"><%= campground.title %></h5>
                     <p class="card-text"><%= campground.description %></p>
@@ -16,5 +23,10 @@
                     <a href="/campground/<%= campground._id %>" class="btn btn-primary">Details</a>
                 </div>
             </div>
-            <% } %>
+        <% } %>
     </div>
+    <script>
+        const accessToken = "<%- process.env.MAPBOX_PUBLIC_TOKEN %>"
+        const campgroundData = <%- JSON.stringify(campgroundData) %>
+    </script>
+    <script src="/js/clusterMap.js"></script>

@@ -1,13 +1,18 @@
 const express = require("express")
 const campground = require("../controllers/campground")
-const { validateCampground, isLoggedIn, authorize } = require("../utilities/validation")
+const { validateCampground, validateCampgroundUpdate, isLoggedIn, authorize } = require("../utilities/validation")
 const { retrieveCampground } = require("../utilities/retrieve")
+const { getGeometry } = require("../utilities/mapbox")
 const router = express.Router()
 const catchAsync = require("../utilities/catchAsync")
 
+const { storage, addFilesToBody } = require("../utilities/cloudinary")
+const multer = require("multer")
+const upload = multer({ storage })
+
 router.route("/")
     .get(catchAsync(campground.renderIndex))
-    .post(validateCampground, isLoggedIn, catchAsync(campground.createCampground))
+    .post(isLoggedIn, upload.array("image"), addFilesToBody("images"), getGeometry, validateCampground, catchAsync(campground.createCampground))
 
 
 router.get("/new", isLoggedIn, campground.renderNew)
@@ -16,7 +21,7 @@ router.get("/:campgroundId/edit", isLoggedIn, retrieveCampground, authorize, cat
 
 router.route("/:campgroundId")
     .get(retrieveCampground, catchAsync(campground.renderDetail))
-    .put(validateCampground, isLoggedIn, authorize, catchAsync(campground.updateCampground))
+    .patch(isLoggedIn, retrieveCampground, authorize, upload.array("image"), addFilesToBody("newImages"), getGeometry, validateCampgroundUpdate, catchAsync(campground.updateCampground))
     .delete(isLoggedIn, retrieveCampground, authorize, catchAsync(campground.deleteCampground))
 
 router.use(campground.handleError)

@@ -3,12 +3,12 @@
         <div>
             <h1 class="text-center">Update Campground</h1>
         </div>
-        <div class="col-6 offset-3">
-            <form action="/campground/<%= campground._id %>?_method=put" method="post" class="needs-validation">
+        <div class="col-md-6 offset-md-3">
+            <form action="/campground/<%= campground._id %>?_method=patch" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
                 <div class="mb-2">
                     <label class="form-label" for="title">Title: </label>
                     <input class="form-control" type="text" name="title" id="title"
-                        placeholder="<%= campground.title %>" aria-describedby="titleFeedback" required>
+                        placeholder="<%= campground.title %>" aria-describedby="titleFeedback" >
                     <div class="valid-feedback">Looks Good!</div>
                     <div id="titleFeedback" class="invalid-feedback">
                         Please Enter A Title
@@ -19,7 +19,7 @@
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">$</span>
                         <input id="price" name="price" type="number" class="form-control"
-                            placeholder="<%= campground.price %>" aria-label="price" aria-describedby="priceFeedback" required>
+                            placeholder="<%= campground.price %>" aria-label="price" aria-describedby="priceFeedback" >
                         <div class="valid-feedback">Looks Good!</div>
                         <div id="priceFeedback" class="invalid-feedback">
                             Please Enter A Price
@@ -29,25 +29,52 @@
                 <div class="mb-2">
                     <label class="form-label" for="description">Description: </label>
                     <textarea class="form-control" name="description" id="description" cols="30" rows="10"
-                        placeholder="<%= campground.description %>" aria-describedby="descriptionFeedback" required></textarea>
+                        placeholder="<%= campground.description %>" aria-describedby="descriptionFeedback" ></textarea>
                     <div class="valid-feedback">Looks Good!</div>
                     <div id="descriptionFeedback" class="invalid-feedback">
                         Please Enter Your Campground Description
                       </div>
                 </div>
                 <div class="mb-2">
-                    <label class="form-label" for="image">Image URL: </label>
-                    <input class="form-control" type="url" name="image" id="image" placeholder="<%= campground.image %>" aria-describedby="imageFeedback"
-                        required>
-                    <div class="valid-feedback">Looks Good!</div>
-                    <div id="imageFeedback" class="invalid-feedback">
-                        Please Enter An Image Url
-                      </div>
+                    <label class="form-label" for="image">New Image: </label>
+                    <input type="file" name="image" id="image"  max="10" multiple>
                 </div>
+
+                <% if (campground.images.length !== 0) { %>
+                <div id="carouselExample" class="carousel slide">
+                    <div class="carousel-inner">
+                
+                    <% campground.images.forEach((image, i) => { %>
+                        <div class="carousel-item <%= i === 0 ? "active" : "" %>">
+                            <img crossorigin="anonymous" src="<%= image.url %>" class="d-block w-100" alt="<%= image.filename %>">
+                            <div class="d-flex justify-content-center">
+                                <input type="checkbox" name="deleteImage[]" value="<%= image.filename %>" id="delete<%= image.filename %>">
+                                <label for="delete<%= image.filename %>">delete</label>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+                <% if (campground.images.length > 1) { %>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                <% } %>
+                </div>
+                <% } %>
+
+                
+
                 <div class="mb-2">
                     <label class="form-label" for="location">Location: </label>
                     <input class="form-control" type="text" name="location" id="location"
-                        placeholder="<%= campground.location %>" aria-describedby="locationFeedback" required>
+                        placeholder="<%= campground.location %>" aria-describedby="locationFeedback" >
                     <div class="valid-feedback">Looks Good!</div>
                     <div id="locationFeedback" class="invalid-feedback">
                         Please Enter A Location

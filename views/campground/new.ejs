@@ -3,57 +3,65 @@
         <div>
             <h1 class="text-center">New Campground</h1>
         </div>
-        <div class="col-6 offset-3">
-            <form action="/campground" method="post" novalidate class="needs-validation">
-                <div class="mb-2">
-                    <label class="form-label" for="title">Title: </label>
-                    <input class="form-control" type="text" name="title" id="title" aria-describedby="titleFeedback" required>
-                    <div class="valid-feedback">Looks Good!</div>
-                    <div id="titleFeedback" class="invalid-feedback">
-                        Please Enter A Title
-                      </div>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label" for="price">Campground Price: </label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1">$</span>
-                        <input id="price" name="price" type="number" class="form-control" placeholder="0.00"
-                            aria-label="price" aria-describedby="price priceFeedback" required>
-                        <div class="valid-feedback">Looks Good!</div>
-                        <div id="priceFeedback" class="invalid-feedback">
-                            Please Enter A Price
-                          </div>
-                    </div>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label" for="description">Description: </label>
-                    <textarea class="form-control" name="description" id="description" cols="30" rows="10" aria-describedby="descriptionFeedback"
-                        required></textarea>
-                    <div class="valid-feedback">Looks Good!</div>
-                    <div id="descriptionFeedback" class="invalid-feedback">
-                        Please Enter Your Campground Description
-                      </div>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label" for="image">Image URL: </label>
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow">
+                <div class="card-body">
+                    <form action="/campground" method="post" novalidate class="needs-validation"
+                        enctype="multipart/form-data">
+                        <div class="mb-2">
+                            <label class="form-label" for="title">Title: </label>
+                            <input class="form-control" type="text" name="title" id="title"
+                                aria-describedby="titleFeedback" required>
+                            <div class="valid-feedback">Looks Good!</div>
+                            <div id="titleFeedback" class="invalid-feedback">
+                                Please Enter A Title
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label" for="price">Campground Price: </label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">$</span>
+                                <input id="price" name="price" type="number" class="form-control" placeholder="0.00"
+                                    aria-label="price" aria-describedby="price priceFeedback" required>
+                                <div class="valid-feedback">Looks Good!</div>
+                                <div id="priceFeedback" class="invalid-feedback">
+                                    Please Enter A Price
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label" for="description">Description: </label>
+                            <textarea class="form-control" name="description" id="description" cols="30" rows="10"
+                                aria-describedby="descriptionFeedback" required></textarea>
+                            <div class="valid-feedback">Looks Good!</div>
+                            <div id="descriptionFeedback" class="invalid-feedback">
+                                Please Enter Your Campground Description
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <input type="file" name="image" id="image" multiple>
+                            <!-- <label class="form-label" for="image">Image URL: </label>
                     <input class="form-control" type="url" name="image" id="image" aria-describedby="imageFeedback" required>
                     <div class="valid-feedback">Looks Good!</div>
                     <div id="imageFeedback" class="invalid-feedback">
                         Please Enter An Image Url
-                      </div>
+                      </div> -->
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label" for="location">Location: </label>
+                            <input class="form-control" type="text" name="location" id="location"
+                                aria-describedby="locationFeedback" required>
+                            <div class="valid-feedback">Looks Good!</div>
+                            <div id="locationFeedback" class="invalid-feedback">
+                                Please Enter A Location
+                            </div>
+                        </div>
+                        <div class="mb-2 d-flex align-items-center">
+                            <input class="btn btn-success mx-auto" type="submit" value="Add Campground!">
+                        </div>
+                    </form>
                 </div>
-                <div class="mb-2">
-                    <label class="form-label" for="location">Location: </label>
-                    <input class="form-control" type="text" name="location" id="location" aria-describedby="locationFeedback" required>
-                    <div class="valid-feedback">Looks Good!</div>
-                    <div id="locationFeedback" class="invalid-feedback">
-                        Please Enter A Location
-                      </div>
-                </div>
-                <div class="mb-2 d-flex align-items-center">
-                    <input class="btn btn-success mx-auto" type="submit" value="Add Campground!">
-                </div>
-            </form>
+            </div>
         </div>
     </div>
     <script src="/js/validateForms.js"></script>

@@ -3,6 +3,9 @@ const { IdError, ValidationError } = require("../utilities/error")
 const { CastError } = require("mongoose").Error
 
 const errorHandler = ((error, req, res, next) => {
+    if(process.env.NODE_ENV === "production"){
+        error.stack = ""
+    }
     if (error instanceof CastError) {
         console.log(error)
         res.status(400).render("error", { error })

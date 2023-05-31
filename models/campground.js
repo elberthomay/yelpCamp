@@ -12,9 +12,19 @@ const campgroundSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    image: {
-        type: String,
-        required: true
+    images: {
+        type: [{
+          url: {
+            type: String,
+            required: true
+          },
+          filename: {
+            type: String,
+            required: true
+          }
+        }],
+        required: true,
+        max: 10
     },
     price: {
         type: Number,
@@ -28,6 +38,17 @@ const campgroundSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    geometry: {
+        type: {
+            type: String,
+            enum: ["Point"],
+            required: true,
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    }
 });
 
 
@@ -42,7 +63,7 @@ campgroundSchema.statics.getAll = async function () {
 }
 
 campgroundSchema.statics.getById = async function (id) {
-    const campground = await this.findById(id);
+    const campground = await this.findById(id).populate("user", "username");
     if (!campground) throw new IdError("Campground Id not found", 404)
     const reviews = await Review.getByCampgroundId(id)
     campground.reviews = reviews

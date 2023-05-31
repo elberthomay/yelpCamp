@@ -1,34 +1,49 @@
 <%- layout("layouts/boilerplate") %>
-    <div>
-        <form class="needs-validation" action="/register" method="post" novalidate>
-            <div class="mb-2">
-                <label class="form-label" for="username">Username: </label>
-                <input class="form-control" type="text" name="username" id="username" placeholder="Username"
-                    aria-describedby="usernameFeedback" required>
-                <div class="valid-feedback">Looks Good!</div>
-                <div id="usernameFeedback" class="invalid-feedback">
-                    Please Enter A Username
+    <div class="container d-flex justify-content-center align-items-center mt-5">
+        <div class="row" style="width: 100%">
+            <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+                <div class="card shadow">
+                    <img crossorigin="anonymous" src="https://images.unsplash.com/photo-1496545672447-f699b503d270?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80"
+                        class="card-img-top">
+                    <div class="card-body">
+
+                        <h5 class="card-title">Register</h5>
+                        <form class="needs-validation" action="/register" method="post" novalidate>
+                            <div class="mb-2">
+                                <label class="form-label" for="username">Username: </label>
+                                <input class="form-control" type="text" name="username" id="username"
+                                    placeholder="Username" aria-describedby="usernameFeedback" autofocus required>
+                                <div class="valid-feedback">Looks Good!</div>
+                                <div id="usernameFeedback" class="invalid-feedback">
+                                    Please Enter A Username
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="email">Email: </label>
+                                <input class="form-control" type="email" name="email" id="email" placeholder="Email"
+                                    aria-describedby="emailFeedback" required>
+                                <div class="valid-feedback">Looks Good!</div>
+                                <div id="emailFeedback" class="invalid-feedback">
+                                    Please Enter An Email
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="password">Password: </label>
+                                <input class="form-control" type="password" name="password" id="password"
+                                    placeholder="password" aria-describedby="passwordFeedback" required>
+                                <div class="valid-feedback">Looks Good!</div>
+                                <div id="passwordFeedback" class="invalid-feedback">
+                                    Please Enter A Password
+                                </div>
+                            </div>
+                            <div class="d-grid .gap-1">
+                                <input class="btn btn-success" type="submit" value="Register">
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <div class="mb-2">
-                <label class="form-label" for="email">Email: </label>
-                <input class="form-control" type="email" name="email" id="email" placeholder="Email"
-                    aria-describedby="emailFeedback" required>
-                <div class="valid-feedback">Looks Good!</div>
-                <div id="emailFeedback" class="invalid-feedback">
-                    Please Enter An Email
-                </div>
-            </div>
-            <div class="mb-2">
-                <label class="form-label" for="password">Password: </label>
-                <input class="form-control" type="password" name="password" id="password" placeholder="password"
-                    aria-describedby="passwordFeedback" required>
-                <div class="valid-feedback">Looks Good!</div>
-                <div id="passwordFeedback" class="invalid-feedback">
-                    Please Enter A Password
-                </div>
-            </div>
-            <input class="btn btn-success" type="submit" value="Register">
-        </form>
+        </div>
     </div>
+
     <script src="/js/validateForms.js"></script>
