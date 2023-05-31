@@ -40,13 +40,9 @@ const sessionOption = {
     }
 }
 
-console.log(process.env.SESSION_KEY)
-
 
 //"mongodb://127.0.0.1:27017/yelpCampDb"
-mongoose.connect(mongodbURL, { useNewUrlParser: true })
-    .then(() => console.log("database connected"))
-    .catch((error) => console.error.bind("connection error"));
+
 
 
 
@@ -137,6 +133,11 @@ app.all("*", (req, res) => {
     res.status(404).render("notfound")
 })
 
-app.listen(3000, () => {
-    console.log("listening on 3000")
-})
+mongoose.connect(mongodbURL, { useNewUrlParser: true })
+    .then(() => {
+        console.log("database connected")
+        app.listen(process.env.PORT, () => {
+            console.log("listening for request")
+        })
+    })
+    .catch((error) => console.error.bind("connection error"));
