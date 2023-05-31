@@ -14,7 +14,7 @@ const passport = require("passport")
 const LocalStrategy = require("passport-local")
 const helmet = require("helmet")
 const User = require("./models/user")
-const mongodbURL = "mongodb://127.0.0.1:27017/yelpCampDb" //process.env.MONGODB_URL
+const mongodbURL = process.env.MONGODB_URL
 
 const campgroundRouter = require("./routes/campground")
 const reviewRouter = require("./routes/review")
