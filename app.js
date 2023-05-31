@@ -8,19 +8,30 @@ const path = require("path")
 const ejsMate = require("ejs-mate")
 const methodOverride = require("method-override")
 const session = require("express-session")
+const mongoStore = require("connect-mongo")
 const flash = require("connect-flash")
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
 const helmet = require("helmet")
 const User = require("./models/user")
+const mongodbURL = "mongodb://127.0.0.1:27017/yelpCampDb" //process.env.MONGODB_URL
 
 const campgroundRouter = require("./routes/campground")
 const reviewRouter = require("./routes/review")
 const usersRouter = require("./routes/users")
 const errorRouter = require("./routes/error")
 
+const store = mongoStore.create({
+    mongoUrl: mongodbURL,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: process.env.SESSION_KEY
+    }
+})
+
 const sessionOption = {
-    secret: "this is not a secret",
+    store,
+    secret: process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -29,9 +40,11 @@ const sessionOption = {
     }
 }
 
+console.log(process.env.SESSION_KEY)
 
 
-mongoose.connect("mongodb://127.0.0.1:27017/yelpCampDb", { useNewUrlParser: true })
+//"mongodb://127.0.0.1:27017/yelpCampDb"
+mongoose.connect(mongodbURL, { useNewUrlParser: true })
     .then(() => console.log("database connected"))
     .catch((error) => console.error.bind("connection error"));
 

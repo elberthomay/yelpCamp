@@ -69,7 +69,6 @@ function validate(joiSchema, callback) {
             const message = error.details.map(e => e.message).join(",");
             throw new ValidationError(message, 400);
         } else {
-            console.log(req.body)
             req.body = value
             callback(req.body);
             next();
@@ -79,7 +78,7 @@ function validate(joiSchema, callback) {
 
 const validateCampground = validate(campgroundSchema, () => {})
 const validateReview = validate(reviewSchema, () => {})
-const validateCampgroundUpdate = validate(campgroundUpdateSchema, (data) => {console.log(data)})
+const validateCampgroundUpdate = validate(campgroundUpdateSchema, () => {})
 
 function moveReturnTo(req, res, next) {
     res.locals.returnTo = req.session.returnTo
