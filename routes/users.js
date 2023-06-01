@@ -2,18 +2,18 @@ const router = require("express").Router()
 const users = require("../controllers/users")
 const catchAsync = require("../utilities/catchAsync")
 const passport = require("passport")
-const { moveReturnTo } = require("../utilities/validation")
+const { moveReturnTo, validateRegister, validateLogin } = require("../utilities/validation")
 
 router.route("/register")
     .get(users.renderRegister)
-    .post(catchAsync(users.register))
+    .post(validateRegister, catchAsync(users.register), users.errorHandle)
 
 router.route("/login")
     .get(users.renderLogin)
-    .post(moveReturnTo, passport.authenticate("local", {
+    .post(validateLogin, moveReturnTo, passport.authenticate("local", {
         failureFlash: true,
         failureRedirect: "/login",
-    }), users.login)
+    }), users.login, users.errorHandle)
 
 router.get("/logout", users.logout)
 

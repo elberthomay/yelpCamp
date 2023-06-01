@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const review = require("../controllers/review")
-const { validateReview, isLoggedIn, authorize } = require("../utilities/validation")
+const { validateReview, isLoggedIn, authorize, validateId } = require("../utilities/validation")
 const { retrieveReview } = require("../utilities/retrieve")
 const catchAsync = require("../utilities/catchAsync")
 
@@ -27,11 +27,11 @@ const catchAsync = require("../utilities/catchAsync")
 // }))
 
 // create new review on camp with provided id
-router.post("/:campId", isLoggedIn, validateReview, catchAsync(review.createReview))
+router.post("/:campId", isLoggedIn, validateId("campId"), validateReview, catchAsync(review.createReview))
 
 // update or delete review for the provided review id
 router.route("/:reviewId")
-    .patch(isLoggedIn, validateReview, retrieveReview, authorize, catchAsync(review.updateReview))
-    .delete(isLoggedIn, retrieveReview, authorize, catchAsync(review.deleteReview))
+    .patch(isLoggedIn, validateId("reviewId"), validateReview, retrieveReview, authorize, catchAsync(review.updateReview))
+    .delete(isLoggedIn, validateId("reviewId"), retrieveReview, authorize, catchAsync(review.deleteReview))
 
 module.exports = router

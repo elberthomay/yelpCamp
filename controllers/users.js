@@ -34,3 +34,9 @@ module.exports.logout = (req, res, next) => {
         res.redirect("/campground")
     })
 }
+
+module.exports.errorHandle = (error, req, res, next) => {
+    const url = req.originalUrl;
+    req.flash("error", error.message)
+    res.redirect(url)
+}

@@ -1,5 +1,5 @@
 const joiBase = require("joi")
-const { ValidationError } = require("./error")
+const { ValidationError, IdError } = require("./error")
 const sanitizeHTML = require("sanitize-html")
 
 const extension = (joi) => ({
@@ -24,6 +24,8 @@ const extension = (joi) => ({
 
 const joi = joiBase.extend(extension)
 
+const idSchema = joi.string().hex().length(24).required()
+
 const geoJSONSchema = joi.object({
     type: joi.string().valid("Point").required(),
     coordinates: joi.array().items(joi.number()).length(2).required()
@@ -41,9 +43,6 @@ const campgroundSchema = joi.object({
     geometry: geoJSONSchema.required()
 }).unknown(false).required()
 
-const checkEmptyString = (value, helpers) => (value === "" ? helpers.strip() : value)
-const checkEmptyArray = (value, helpers) => (value.length === 0 ? helpers.strip() : value)
-
 const campgroundUpdateSchema = joi.object({
     title: joi.string().max(50).empty("").optional().escapeHTML(), 
     price: joi.number().min(0).empty("").optional(),
@@ -57,9 +56,24 @@ const campgroundUpdateSchema = joi.object({
     geometry: geoJSONSchema.optional()
 }).unknown(false).required()
 
+const usernameSchema = joi.string().alphanum().min(4).max(30)
+const passwordSchema = joi.string().min(8).max(50)
+const emailSchema = joi.string().email({ minDomainSegments: 2, tlds: false })
+
 const reviewSchema = joi.object({
     review: joi.string().max(500).optional().empty("").escapeHTML(),
     star: joi.number().integer().min(1).max(5).required(),
+}).unknown(false).required()
+
+const registerSchema = joi.object({
+    username: usernameSchema.required(),
+    password: passwordSchema.required(),
+    email: emailSchema.required()
+}).unknown(false).required()
+
+const loginSchema = joi.object({
+    username: usernameSchema.required(),
+    password: passwordSchema.required(),
 }).unknown(false).required()
 
 function validate(joiSchema, callback) {
@@ -79,6 +93,21 @@ function validate(joiSchema, callback) {
 const validateCampground = validate(campgroundSchema, () => {})
 const validateReview = validate(reviewSchema, () => {})
 const validateCampgroundUpdate = validate(campgroundUpdateSchema, () => {})
+const validateRegister = validate(registerSchema, () => {})
+const validateLogin = validate(loginSchema, () => {})
+
+const validateId = (idName = "id") => {
+    return (req, res, next) => {
+        const id = req.params[idName]
+        const { error } = idSchema.validate(id)
+        if(error) {
+            const message = error.details.map(e => e.message).join(",")
+            throw new IdError(message, 404)
+        }else{
+            next()
+        }
+    }
+}
 
 function moveReturnTo(req, res, next) {
     res.locals.returnTo = req.session.returnTo
@@ -103,4 +132,4 @@ function authorize(req, res, next){
 }
 
 
-module.exports = { validateCampground, validateReview, validateCampgroundUpdate, isLoggedIn, moveReturnTo, authorize }
+module.exports = { validateId, validateCampground, validateReview, validateCampgroundUpdate, validateRegister, validateLogin, isLoggedIn, moveReturnTo, authorize }
