@@ -57,9 +57,18 @@ campgroundSchema.post("findOneAndDelete", async function (data) {
     await Review.deleteMany({ campground: campgroundId })
 })
 
-campgroundSchema.statics.getAll = async function () {
-    const campgrounds = await this.find({});
-    return campgrounds;
+campgroundSchema.statics.getAll = async function (pageSize, pageNumber) {
+    const maxPage = Math.ceil((await this.countDocuments({})) / pageSize)
+    pageNumber = pageNumber > maxPage ? maxPage : pageNumber
+    const pageSkip = pageSize * ( pageNumber - 1 )
+    const campgrounds = await this.find({}).limit(pageSize).skip(pageSkip);
+    
+    return { campgrounds, maxPage, pageNumber};
+}
+
+campgroundSchema.statics.getMapData = async function(){
+    const mapData = await this.find({}).select("_id title geometry")
+    return mapData
 }
 
 campgroundSchema.statics.getById = async function (id) {

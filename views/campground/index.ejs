@@ -25,6 +25,10 @@
             </div>
         <% } %>
     </div>
+    <p><% if (pageNumber > 1) { %><a href="/campground/?pg=<%= pageNumber - 1 %>">Prev</a><% } %>
+     Page<strong><%= pageNumber %></strong> out of <strong><%= maxPage %></strong> 
+     <% if (pageNumber < maxPage) { %><a href="/campground/?pg=<%= pageNumber + 1 %>">Next</a><% } %>
+     </p>
     <script>
         const accessToken = "<%- process.env.MAPBOX_PUBLIC_TOKEN %>"
         const campgroundData = <%- JSON.stringify(campgroundData) %>

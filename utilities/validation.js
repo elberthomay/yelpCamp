@@ -65,6 +65,10 @@ const reviewSchema = joi.object({
     star: joi.number().integer().min(1).max(5).required(),
 }).unknown(false).required()
 
+const pageNumberSchema = joi.alternatives().try(
+    joi.number().integer().min(1)
+).default(1);
+
 const registerSchema = joi.object({
     username: usernameSchema.required(),
     password: passwordSchema.required(),
@@ -109,6 +113,15 @@ const validateId = (idName = "id") => {
     }
 }
 
+const validatePageNumber = function (queryName){
+    return (req, res, next) => {
+        const query = req.query[queryName]
+        const { value, error } = pageNumberSchema.validate(query)
+        req.query[queryName] = value
+        next()
+    }
+}
+
 function moveReturnTo(req, res, next) {
     res.locals.returnTo = req.session.returnTo
     next()
@@ -132,4 +145,4 @@ function authorize(req, res, next){
 }
 
 
-module.exports = { validateId, validateCampground, validateReview, validateCampgroundUpdate, validateRegister, validateLogin, isLoggedIn, moveReturnTo, authorize }
+module.exports = { validateId, validateCampground, validateReview, validateCampgroundUpdate, validateRegister, validateLogin, validatePageNumber, isLoggedIn, moveReturnTo, authorize }

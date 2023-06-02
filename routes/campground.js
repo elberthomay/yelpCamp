@@ -1,6 +1,6 @@
 const express = require("express")
 const campground = require("../controllers/campground")
-const { validateId, validateCampground, validateCampgroundUpdate, isLoggedIn, authorize } = require("../utilities/validation")
+const { validateId, validateCampground, validateCampgroundUpdate, validatePageNumber, isLoggedIn, authorize } = require("../utilities/validation")
 const { retrieveCampground } = require("../utilities/retrieve")
 const { getGeometry } = require("../utilities/mapbox")
 const router = express.Router()
@@ -11,7 +11,7 @@ const multer = require("multer")
 const upload = multer({ storage })
 
 router.route("/")
-    .get(catchAsync(campground.renderIndex))
+    .get(validatePageNumber("pg"), catchAsync(campground.renderIndex))
     .post(isLoggedIn, upload.array("image"), addFilesToBody("images"), getGeometry, validateCampground, catchAsync(campground.createCampground))
 
 

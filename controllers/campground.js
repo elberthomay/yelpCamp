@@ -4,11 +4,13 @@ const { cloudinary } = require("../utilities/cloudinary")
 const { IdError } = require("../utilities/error")
 
 module.exports.renderIndex = async (req, res) => {
-    const campgrounds = await Campground.getAll()
+    const pageNumber = req.query.pg || 1
+    const campgrounds = await Campground.getAll(20, pageNumber)
+    const mapData = await Campground.getMapData()
     const campgroundData = {
         type: "FeatureCollection",
         crs: { type: "name", properties: { name: "campgroundData" } },
-        features: campgrounds.map((campground) => ({
+        features: mapData.map((campground) => ({
             type: "Feature",
             properties: {
                 title: campground.title,
@@ -17,7 +19,7 @@ module.exports.renderIndex = async (req, res) => {
             geometry: campground.geometry
         }))
     }
-    res.render("campground/index", { campgrounds, campgroundData })
+    res.render("campground/index", { ...campgrounds, campgroundData })
 }
 
 module.exports.renderNew = (req, res) => {
